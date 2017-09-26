@@ -1,9 +1,13 @@
-package FirstTask;
-
-import javax.jms.*;
+package SecondTask;
 
 import com.sun.messaging.ConnectionConfiguration;
 import com.sun.messaging.ConnectionFactory;
+
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSException;
+import javax.jms.JMSProducer;
+
 /**
  * Created by Grish on 26.09.2017.
  */
@@ -17,10 +21,12 @@ public class DirectMessageSender {
             JMSContext context = factory.createContext("admin", "admin");
             try {
                 factory.setProperty(ConnectionConfiguration.imqAddressList, "mq://127.0.0.1:7676,mq://127.0.0.1:7676");
-                Destination cardsQueue = context.createQueue("BankCardQueue");
+                Destination cardsTopic = context.createTopic("BankCardTopic");
                 JMSProducer producer = context.createProducer();
 
-                producer.send(cardsQueue, "PNV 100 5634234");
+                for (int i=0;i<5;i++){
+                    producer.send(cardsTopic, "Message "+ i);
+                }
 
                 System.out.println("Placed an information about card transaction to Bank");
             } finally {
