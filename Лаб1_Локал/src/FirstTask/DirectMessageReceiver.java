@@ -1,3 +1,5 @@
+package FirstTask;
+
 import javax.jms.*;
 
 import com.sun.messaging.ConnectionConfiguration;
