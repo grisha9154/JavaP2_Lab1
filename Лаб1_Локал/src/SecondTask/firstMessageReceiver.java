@@ -11,15 +11,22 @@ import javax.jms.*;
 public class firstMessageReceiver implements MessageListener {
     ConnectionFactory factory = new com.sun.messaging.ConnectionFactory();
     JMSConsumer consumer;
+    JMSConsumer q;
 
     firstMessageReceiver(){
         try(JMSContext context = factory.createContext("admin","admin")){
             factory.setProperty(ConnectionConfiguration.imqAddressList,"mq://127.0.0.1:7676,mq://127.0.0.1:7676");
             Destination cardsQueue = context.createTopic("BankCardTopic");
-            consumer = context.createConsumer(cardsQueue);
+            Destination cardsQ = context.createTopic("BankCardQ");
+            String selector = "symbol<>BSTU";
+            consumer = context.createConsumer(cardsQueue,selector);
             consumer.setMessageListener(this);
             System.out.println("Listening to theBankCardTopic...");
 
+            context.acknowledge();
+
+            q = context.createConsumer(cardsQ);
+            q.setMessageListener(this);
             Thread.sleep(100000);
 
         } catch (JMSException e) {
